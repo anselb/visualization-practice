@@ -1,0 +1,17 @@
+<div id="data-display"></div>
+<div id="container"></div>
+
+<script>
+  // Load the titanic data. You must run this from a server.
+  // It won't load from the desktop because of CORS.
+  fetch('titanic-passengers.json')
+    .then(res => res.json())
+    .then(json => handleData(json)) // Call handleData()
+    .catch(err => console.log(err.message))
+
+  // This function handles the loaded JSON data
+  function handleData(data) {
+
+  }
+
+</script>
