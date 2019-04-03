@@ -11,7 +11,30 @@
 
   // This function handles the loaded JSON data
   function handleData(data) {
+    const maleCount = data.reduce((acc, person) => {
+      if (person.fields.sex === "male") {
+        acc += 1
+      }
+      return acc
+    }, 0)
 
+    const femaleCount = data.reduce((acc, person) => {
+      if (person.fields.sex === "female") {
+        acc += 1
+      }
+      return acc
+    }, 0)
+
+    const unknownCount = data.reduce((acc, person) => {
+      if (person.fields.sex !== "male" && person.fields.sex !== "female") {
+        acc += 1
+      }
+      return acc
+    }, 0)
+
+    console.log("Number of males: ", maleCount)
+    console.log("Number of females: ", femaleCount)
+    console.log("Number of unknowns: ", unknownCount)
   }
 
 </script>
