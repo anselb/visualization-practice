@@ -19,6 +19,7 @@
   // few categories tens "sibsp": 0
   // combine parch and sibsp for family size
 
+  // wide range "age": 40.0,
   // wide range "fare": 7.3125,
 
   // not useful "ticket": "Fa 265302",
@@ -77,23 +78,41 @@
     const sex = sample.map(person => person.sex)
     const familySize = sample.map(person => person.parch + person.sibsp)
     const embarked = sample.map(person => person.embarked)
-    console.log("Fare length: ", fare.length)
-    console.log("Sex length: ", sex.length)
-    console.log("Family Size length: ", familySize.length)
-    console.log("Embarked length: ", embarked.length)
+    const age = sample.map(person => person.age)
+    console.log(age)
 
-    const chartWidth = fare.length * 5
     const chartHeight = Math.max(...fare)
-
-    // createHistogram(fare, familySizes, chartWidth, chartHeight)
+    const chartWidth = sample.length * 5
+    createHistogram(fare, familySizes, chartWidth, chartHeight)
     // createHistogram(fare, sex, chartWidth, chartHeight)
-    createHistogram(fare, embarked, chartWidth, chartHeight)
+    // createHistogram(fare, embarked, chartWidth, chartHeight)
+    // createHistogram(familySize, embarked, chartWidth, chartHeight)
   }
 
   function normalize(dataArr) {
     const maxVal = Math.max(...dataArr)
     const normalArr = dataArr.map(val => val / maxVal * 100)
     return normalArr
+  }
+
+  // From https://stackoverflow.com/questions/11499268/sort-two-arrays-the-same-way
+  function sortTwoArrs(sortByArr, arrTwo) {
+    // combine
+    const objList = []
+    for(let i = 0; i < sortByArr.length; i++) {
+      objList.push({one: sortByArr[i], two: arrTwo[i]})
+    }
+
+    // sort
+    objList.sort((a, b) => a.one - b.one)
+
+    // separate
+    for(var j = 0; j < objList.length; j++) {
+      sortByArr[j] = objList[j].one;
+      arrTwo[j] = objList[j].two;
+    }
+
+    return {sortedNormalData: sortByArr, sortedPersonColor: arrTwo}
   }
 
   function createHistogram(personY, personColor, chartWidth, chartHeight) {
@@ -104,18 +123,20 @@
     const step = chartWidth / normalData.length
     const chart = document.createElement('div')
 
+    const {sortedNormalData, sortedPersonColor} = sortTwoArrs(normalData, personColor)
+
     container.appendChild(chart)
     chart.style.display = 'flex'
     chart.style.alignItems = 'flex-end'
     chart.style.width = `${chartWidth}px`
     chart.style.height = `${chartHeight}px`
 
-    for (let i = 0; i < normalData.length; i++) {
+    for (let i = 0; i < sortedNormalData.length; i++) {
       const bar = document.createElement('div')
       chart.appendChild(bar)
 
-      bar.style.backgroundColor = colors[personColorSet.indexOf(personColor[i])]
-      bar.style.height = `${normalData[i]}%`
+      bar.style.backgroundColor = colors[personColorSet.indexOf(sortedPersonColor[i])]
+      bar.style.height = (sortedNormalData[i]) ? `${sortedNormalData[i]}%` : `0.5%`
       bar.style.width = `${step}px`
       bar.style.marginRight = '1px'
       bar.style.marginLeft = '1px'
@@ -130,12 +151,13 @@
 
       const colorName = document.createElement('span')
       color.appendChild(colorName)
-      const personColorInfo = document.createElement('span')
-      color.appendChild(personColorInfo)
 
       colorName.innerHTML = `${colors[i]}: `
       colorName.style.fontSize = '24px'
       colorName.style.color = colors[i]
+
+      const personColorInfo = document.createElement('span')
+      color.appendChild(personColorInfo)
 
       personColorInfo.innerHTML = `${personColorSet[i]}`
       personColorInfo.style.fontSize = '24px'
