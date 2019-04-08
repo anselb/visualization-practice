@@ -7,7 +7,7 @@
     .then(res => res.json())
     .then(json => json.map((person) => person.fields))
     .then(cleanJson => handleData(cleanJson)) // Call handleData()
-    .catch(err => console.log(err.message))
+    .catch(err => console.log(err))
 
   // few categories binary "sex": "male",
   // few categories binary "survived": "No",
@@ -65,12 +65,81 @@
     console.log("Unique values in parch: ", parchSet)
     console.log("Unique values in familySize: ", familySet)
 
+    const sample = data.reduce((acc, person) => {
+      if (0.5 < Math.random()) {
+        return [...acc, person]
+      }
+      return acc
+    }, [])
+    console.log("Sample: ", sample)
 
-    const fare = data.map(person => person.fare)
-    const sex = data.map(person => person.sex)
+    const fare = sample.map(person => person.fare)
+    const sex = sample.map(person => person.sex)
+    const familySize = sample.map(person => person.parch + person.sibsp)
+    const embarked = sample.map(person => person.embarked)
     console.log("Fare length: ", fare.length)
     console.log("Sex length: ", sex.length)
+    console.log("Family Size length: ", familySize.length)
+    console.log("Embarked length: ", embarked.length)
 
-    // createHistogram()
+    const chartWidth = fare.length * 5
+    const chartHeight = Math.max(...fare)
+
+    // createHistogram(fare, familySizes, chartWidth, chartHeight)
+    // createHistogram(fare, sex, chartWidth, chartHeight)
+    createHistogram(fare, embarked, chartWidth, chartHeight)
+  }
+
+  function normalize(dataArr) {
+    const maxVal = Math.max(...dataArr)
+    const normalArr = dataArr.map(val => val / maxVal * 100)
+    return normalArr
+  }
+
+  function createHistogram(personY, personColor, chartWidth, chartHeight) {
+    const normalData = normalize(personY)
+    const colors = ["crimson", "orange", "khaki", "chartreuse", "darkolivegreen",
+                    "darkturquoise", "dodgerblue", "navy", "darkviolet", "hotpink"]
+    const personColorSet = [...(new Set(personColor))]
+    const step = chartWidth / normalData.length
+    const chart = document.createElement('div')
+
+    container.appendChild(chart)
+    chart.style.display = 'flex'
+    chart.style.alignItems = 'flex-end'
+    chart.style.width = `${chartWidth}px`
+    chart.style.height = `${chartHeight}px`
+
+    for (let i = 0; i < normalData.length; i++) {
+      const bar = document.createElement('div')
+      chart.appendChild(bar)
+
+      bar.style.backgroundColor = colors[personColorSet.indexOf(personColor[i])]
+      bar.style.height = `${normalData[i]}%`
+      bar.style.width = `${step}px`
+      bar.style.marginRight = '1px'
+      bar.style.marginLeft = '1px'
+    }
+
+    const key = document.createElement('div')
+    container.appendChild(key)
+
+    for (let i = 0; i < personColorSet.length; i++) {
+      const color = document.createElement('div')
+      key.appendChild(color)
+
+      const colorName = document.createElement('span')
+      color.appendChild(colorName)
+      const personColorInfo = document.createElement('span')
+      color.appendChild(personColorInfo)
+
+      colorName.innerHTML = `${colors[i]}: `
+      colorName.style.fontSize = '24px'
+      colorName.style.color = colors[i]
+
+      personColorInfo.innerHTML = `${personColorSet[i]}`
+      personColorInfo.style.fontSize = '24px'
+      personColorInfo.style.color = 'black'
+    }
   }
 </script>
