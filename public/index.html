@@ -1,4 +1,3 @@
-<div id="data-display"></div>
 <div id="container"></div>
 
 <script>
@@ -6,27 +5,44 @@
   // It won't load from the desktop because of CORS.
   fetch('titanic-passengers.json')
     .then(res => res.json())
-    .then(json => handleData(json)) // Call handleData()
+    .then(json => json.map((person) => person.fields))
+    .then(cleanJson => handleData(cleanJson)) // Call handleData()
     .catch(err => console.log(err.message))
+
+  // few categories binary "sex": "male",
+  // few categories binary "survived": "No",
+
+  // few categories triple "pclass": 3,
+  // few categories triple "embarked": "S",
+
+  // few categories tens "parch": 0,
+  // few categories tens "sibsp": 0
+  // combine parch and sibsp for family size
+
+  // wide range "fare": 7.3125,
+
+  // not useful "ticket": "Fa 265302",
+  // not useful "passengerid": 155,
+  // not useful "name": "Olsen, Mr. Ole Martin",
 
   // This function handles the loaded JSON data
   function handleData(data) {
     const maleCount = data.reduce((acc, person) => {
-      if (person.fields.sex === "male") {
+      if (person.sex === "male") {
         acc += 1
       }
       return acc
     }, 0)
 
     const femaleCount = data.reduce((acc, person) => {
-      if (person.fields.sex === "female") {
+      if (person.sex === "female") {
         acc += 1
       }
       return acc
     }, 0)
 
     const unknownCount = data.reduce((acc, person) => {
-      if (person.fields.sex !== "male" && person.fields.sex !== "female") {
+      if (person.sex !== "male" && person.sex !== "female") {
         acc += 1
       }
       return acc
@@ -35,6 +51,26 @@
     console.log("Number of males: ", maleCount)
     console.log("Number of females: ", femaleCount)
     console.log("Number of unknowns: ", unknownCount)
-  }
 
+    const sibspArr = data.map(person => person.sibsp)
+    const sibspSet = new Set(sibspArr)
+
+    const parchArr = data.map(person => person.parch)
+    const parchSet = new Set(parchArr)
+
+    const familySizes = data.map(person => person.parch + person.sibsp)
+    const familySet = new Set(familySizes)
+
+    console.log("Unique values in sibsp: ", sibspSet)
+    console.log("Unique values in parch: ", parchSet)
+    console.log("Unique values in familySize: ", familySet)
+
+
+    const fare = data.map(person => person.fare)
+    const sex = data.map(person => person.sex)
+    console.log("Fare length: ", fare.length)
+    console.log("Sex length: ", sex.length)
+
+    // createHistogram()
+  }
 </script>
