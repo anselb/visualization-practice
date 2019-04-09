@@ -1,5 +1,5 @@
 {
-  "name": "tutorial-2",
+  "name": "data-visualizations",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,5 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.4"
-  }
+  "dependencies": {}
 }
