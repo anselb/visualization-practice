@@ -35,12 +35,18 @@ const mimeType = {
   '.ttf': 'aplication/font-sfnt'
 };
 
+// Set of accessible files
+let fileSet = new Set()
+fileSet.add("/")
+fileSet.add("/titanic-passengers.json")
+fileSet.add("/iris.json")
+
 http.createServer(function (req, res) {
   console.log(`${req.method} ${req.url}`);
 
   let parsedUrl = url.parse("/")
-  // parse URLs that are only one of these two files in the public folder
-  if (req.url === "/" || req.url === "/titanic-passengers.json"){
+  // allows access to files that are only defined in the set and in the public folder
+  if (fileSet.has(req.url)) {
     parsedUrl = url.parse(req.url)
   } else {
     // how to redirect in vanilla node: https://stackoverflow.com/questions/4062260/nodejs-redirect-url
