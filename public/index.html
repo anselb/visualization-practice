@@ -1,85 +1,26 @@
 <div id="container"></div>
 
 <script>
-  // Load the titanic data. You must run this from a server.
-  // It won't load from the desktop because of CORS.
   fetch('titanic-passengers.json')
     .then(res => res.json())
     .then(json => json.map((person) => person.fields))
     .then(cleanJson => handleData(cleanJson)) // Call handleData()
     .catch(err => console.log(err))
 
-  // few categories binary "sex": "male",
-  // few categories binary "survived": "No",
-
-  // few categories triple "pclass": 3,
-  // few categories triple "embarked": "S",
-
-  // few categories tens "parch": 0,
-  // few categories tens "sibsp": 0
-  // combine parch and sibsp for family size
-
-  // wide range "age": 40.0,
-  // wide range "fare": 7.3125,
-
-  // not useful "ticket": "Fa 265302",
-  // not useful "passengerid": 155,
-  // not useful "name": "Olsen, Mr. Ole Martin",
-
   // This function handles the loaded JSON data
   function handleData(data) {
-    const maleCount = data.reduce((acc, person) => {
-      if (person.sex === "male") {
-        acc += 1
-      }
-      return acc
-    }, 0)
-
-    const femaleCount = data.reduce((acc, person) => {
-      if (person.sex === "female") {
-        acc += 1
-      }
-      return acc
-    }, 0)
-
-    const unknownCount = data.reduce((acc, person) => {
-      if (person.sex !== "male" && person.sex !== "female") {
-        acc += 1
-      }
-      return acc
-    }, 0)
-
-    console.log("Number of males: ", maleCount)
-    console.log("Number of females: ", femaleCount)
-    console.log("Number of unknowns: ", unknownCount)
-
-    const sibspArr = data.map(person => person.sibsp)
-    const sibspSet = new Set(sibspArr)
-
-    const parchArr = data.map(person => person.parch)
-    const parchSet = new Set(parchArr)
-
-    const familySizes = data.map(person => person.parch + person.sibsp)
-    const familySet = new Set(familySizes)
-
-    console.log("Unique values in sibsp: ", sibspSet)
-    console.log("Unique values in parch: ", parchSet)
-    console.log("Unique values in familySize: ", familySet)
-
     const sample = data.reduce((acc, person) => {
-      if (0.5 < Math.random()) {
+      if (0.75 < Math.random()) {
         return [...acc, person]
       }
       return acc
     }, [])
-    console.log("Sample: ", sample)
 
     const fare = sample.map(person => person.fare)
     const sex = sample.map(person => person.sex)
     const familySize = sample.map(person => person.parch + person.sibsp)
     const embarked = sample.map(person => person.embarked)
     const age = sample.map(person => person.age)
-    console.log(age)
 
     const chartHeight = Math.max(...fare)
     const chartWidth = sample.length * 5
