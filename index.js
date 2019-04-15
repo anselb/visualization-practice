@@ -2,7 +2,7 @@
 // const express = require('express');
 //
 // const app = express();
-// app.use(express.static('public'));
+// app.use(express.static('docs'));
 //
 // const PORT = process.env.PORT = 4000;
 //
@@ -47,7 +47,7 @@ http.createServer(function (req, res) {
   console.log(`${req.method} ${req.url}`);
 
   let parsedUrl = url.parse("/")
-  // allows access to files that are only defined in the set and in the public folder
+  // allows access to files that are only defined in the set and in the docs folder
   if (fileSet.has(req.url)) {
     parsedUrl = url.parse(req.url)
   } else {
@@ -63,7 +63,7 @@ http.createServer(function (req, res) {
   // e.g curl --path-as-is http://localhost:9000/../fileInDanger.txt
   // by limiting the path to current directory only
   const sanitizePath = path.normalize(parsedUrl.pathname).replace(/^(\.\.[\/\\])+/, '');
-  let pathname = path.join(`${__dirname}/public`, sanitizePath);
+  let pathname = path.join(`${__dirname}/docs`, sanitizePath);
 
   fs.exists(pathname, function (exist) {
     if(!exist) {
