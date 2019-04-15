@@ -9,9 +9,55 @@
 
   // This function handles the loaded JSON data
   function handleData(data) {
+    const features = findAllFeatures(data)
+    const { categorical, numerical } = categorize(data, features)
     normalizeAll(data)
+
     const sample = sampleData(data, 0.75)
-    createHistogram(sample, "fare")
+    const bars = createBars(sample, categorical)
+    createHistogram(bars, "fare", "sex")
+  }
+
+  function findAllFeatures(data) {
+    const allFeatures = new Set()
+
+    data.forEach(dataPoint => {
+      for (let feature in dataPoint) {
+        if (!allFeatures.has(feature)) {
+          allFeatures.add(feature)
+        }
+      }
+    })
+
+    return allFeatures
+  }
+
+  function categorize(data, features) {
+    const categorical = {}
+    const numerical = []
+
+    for (let feature of features.values()) {
+      const featureArr = data.map(dataRow => dataRow[feature])
+      featureSet = new Set(featureArr)
+
+      // determine if categorical data
+      if (featureSet.size <= 10) {
+        const categories = Array.from(featureSet)
+        categorical[feature] = categories
+      }
+
+      // determine if numerical data
+      for (let dataPoint of featureSet.values()) {
+        if (dataPoint) {
+          if (typeof dataPoint === "number") {
+            numerical.push(feature)
+          }
+          break
+        }
+      }
+    }
+
+    return { categorical, numerical }
   }
 
   function sampleData(data, samplePercent = 0.5) {
@@ -32,21 +78,25 @@
   }
 
   function normalizeAll(data) {
+    const allFeatures = findAllFeatures(data)
     const numericalFeatures = new Set()
 
-    data.forEach(dataPoint => {
-      for(let feature in dataPoint) {
-        if (!numericalFeatures.has(feature) && typeof dataPoint[feature] == "number") {
-          console.log(feature, typeof dataPoint[feature])
+    for (let i = 0; i < data.length; i++) {
+      for (let feature in data[i]) {
+        if (typeof data[i][feature] == "number") {
           numericalFeatures.add(feature)
         }
+        allFeatures.delete(feature)
       }
-    })
+      if (allFeatures.size <= 0) {
+        break
+      }
+    }
 
-    for(let feature of numericalFeatures.values()) {
+    for (let feature of numericalFeatures.values()) {
       const featureData = data.map(dataPoint => dataPoint[feature])
       const maxVal = Math.max(...featureData)
-      for(let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i++) {
         data[i][`${feature}Normal`] = data[i][feature] / maxVal * 100
       }
     }
@@ -56,7 +106,7 @@
   function sortTwoArrs(sortByArr, arrTwo) {
     // combine
     const objList = []
-    for(let i = 0; i < sortByArr.length; i++) {
+    for (let i = 0; i < sortByArr.length; i++) {
       objList.push({one: sortByArr[i], two: arrTwo[i]})
     }
 
@@ -64,7 +114,7 @@
     objList.sort((a, b) => a.one - b.one)
 
     // separate
-    for(var j = 0; j < objList.length; j++) {
+    for (var j = 0; j < objList.length; j++) {
       sortByArr[j] = objList[j].one;
       arrTwo[j] = objList[j].two;
     }
@@ -72,15 +122,14 @@
     return {sortedNormalData: sortByArr, sortedPersonColor: arrTwo}
   }
 
-  function createBars(data) {
+  function createBars(data, categoricalData) {
     const elements = []
 
     data.forEach((item) => {
       const bar = document.createElement('div')
       bar.style.width = '2px'
       bar.style.margin = '1px'
-      bar.style.backgroundColor = 'green'
-      bar.style.transition = '4000ms ease-in-out'
+      bar.style.transition = '3000ms ease-in-out'
 
       bar.get = (field) => {
         return item[field]
@@ -90,17 +139,24 @@
         bar.style.height = item[`${field}Normal`] ? `${item[`${field}Normal`]}%` : `0.5%`
       }
 
+      bar.setColor = (field) => {
+        const fieldCategories = categoricalData[field]
+        const colorOnCircle = fieldCategories.indexOf(item[field]) / fieldCategories.length * 360
+        bar.style.backgroundColor = `hsl(${colorOnCircle}, 80%, 50%)`
+      }
+
       elements.push(bar)
     })
 
     return elements
   }
 
-  function showData(barElements, field) {
-    barElements.forEach((bar) => bar.setHeight(field))
+  function showData(barElements, fieldHeight, fieldColor) {
+    barElements.forEach((bar) => bar.setHeight(fieldHeight))
+    barElements.forEach((bar) => bar.setColor(fieldColor))
   }
 
-  function createHistogram(data, field) {
+  function createHistogram(bars, fieldHeight, fieldColor) {
     const chart = document.createElement('div')
     container.appendChild(chart)
 
@@ -109,10 +165,8 @@
     chart.style.width = `5000px`
     chart.style.height = `600px`
 
-    const bars = createBars(data)
     bars.forEach((bar) => chart.appendChild(bar))
-
-    showData(bars, field)
+    showData(bars, fieldHeight, fieldColor)
   }
 
   function createHistogramOld(personY, personColor, chartWidth, chartHeight) {
