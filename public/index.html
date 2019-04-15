@@ -7,6 +7,11 @@
     .then(cleanJson => handleData(cleanJson)) // Call handleData()
     .catch(err => console.log(err))
 
+  // fetch('iris.json')
+  //   .then(res => res.json())
+  //   .then(cleanJson => handleData(cleanJson)) // Call handleData()
+  //   .catch(err => console.log(err))
+
   // This function handles the loaded JSON data
   function handleData(data) {
     const features = findAllFeatures(data)
@@ -18,12 +23,32 @@
     const histogram = createHistogram(bars)
     container.appendChild(histogram)
 
-    const heightFeature = "fare"
-    const colorFeature = "sex"
-    showData(bars, heightFeature, colorFeature)
+    const heightFeature = numerical[0]
+    const colorFeature = Object.keys(categorical)[0]
+    showHeight(bars, heightFeature)
+    showColor(bars, colorFeature)
 
-    const key = createKey(categorical[colorFeature])
+    let key = createKey(categorical[colorFeature])
     container.appendChild(key)
+
+    const catButtons = createButtons(Object.keys(categorical), "categoryButton")
+    const catButtonGroup = document.createElement('div')
+    catButtons.forEach(button => catButtonGroup.appendChild(button))
+    container.appendChild(catButtonGroup)
+    makeGroup(catButtons, (button) => {
+      showColor(bars, button.innerHTML)
+      let newKey = createKey(categorical[button.innerHTML])
+      container.replaceChild(newKey, key);
+      key = newKey
+    })
+
+    const numButtons = createButtons(numerical, "numericalButton")
+    const numButtonGroup = document.createElement('div')
+    numButtons.forEach(button => numButtonGroup.appendChild(button))
+    container.appendChild(numButtonGroup)
+    makeGroup(numButtons, (button) => {
+      showHeight(bars, button.innerHTML)
+    })
   }
 
   function findAllFeatures(data) {
@@ -137,17 +162,18 @@
       const bar = document.createElement('div')
       bar.style.width = '2px'
       bar.style.margin = '1px'
-      bar.style.transition = '3000ms ease-in-out'
 
       bar.get = (field) => {
         return item[field]
       }
 
       bar.setHeight = (field) => {
+        bar.style.transition = '3000ms ease-in-out'
         bar.style.height = item[`${field}Normal`] ? `${item[`${field}Normal`]}%` : `0.5%`
       }
 
       bar.setColor = (field) => {
+        bar.style.transition = '500ms ease-in-out'
         const fieldCategories = categoricalData[field]
         const colorOnCircle = fieldCategories.indexOf(item[field]) / fieldCategories.length * 360
         bar.style.backgroundColor = `hsl(${colorOnCircle}, 80%, 50%)`
@@ -159,8 +185,11 @@
     return elements
   }
 
-  function showData(barElements, fieldHeight, fieldColor) {
+  function showHeight(barElements, fieldHeight) {
     barElements.forEach((bar) => bar.setHeight(fieldHeight))
+  }
+
+  function showColor(barElements, fieldColor) {
     barElements.forEach((bar) => bar.setColor(fieldColor))
   }
 
@@ -199,5 +228,54 @@
     }
 
     return key
+  }
+
+  // selectButton and makeGroup are taken from Mitchell Hudson in this tutorial: https://github.com/MakeSchool-Tutorials/FEW-2-5-Data-Visualization-Buttons-and-Interaction
+
+  function selectButton(button, state) {
+    button.style.border = '1px solid'
+    button.style.borderRadius = '5px'
+    button.style.margin = '5px'
+    button.style.padding = '5px 10px'
+
+    if (state) {
+      button.style.backgroundColor = '#000'
+      button.style.color = '#fff'
+    } else {
+      button.style.backgroundColor = '#fff'
+      button.style.color = '#000'
+    }
+  }
+
+  function makeGroup(buttons, callback) {
+    buttons.forEach((thisButton) => {
+      selectButton(thisButton, false)
+
+      // Check if this button was clicked out of the group
+      thisButton.addEventListener('click', (e) => {
+        buttons.forEach((button) => {
+          if (button === thisButton) {
+            selectButton(button, true)
+          } else {
+            selectButton(button, false)
+          }
+        })
+        callback(thisButton)
+      })
+
+    })
+  }
+
+  function createButtons(featureGroup, className) {
+    const buttons = []
+
+    for (let feature of featureGroup) {
+      let button = document.createElement('button')
+      button.innerHTML = feature
+      button.className = className
+      buttons.push(button)
+    }
+
+    return buttons
   }
 </script>
