@@ -148,9 +148,7 @@
       const featureData = data.map(dataPoint => {
         return typeof dataPoint[feature] === "number" ? dataPoint[feature] : 0
       })
-      console.log(featureData)
       const maxVal = Math.max(...featureData)
-      console.log(maxVal)
       for (let i = 0; i < data.length; i++) {
         data[i][`${feature}Normal`] = data[i][feature] / maxVal * 100
       }
