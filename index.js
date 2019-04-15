@@ -40,6 +40,8 @@ let fileSet = new Set()
 fileSet.add("/")
 fileSet.add("/titanic-passengers.json")
 fileSet.add("/iris.json")
+fileSet.add("/periodic-table.json")
+
 
 http.createServer(function (req, res) {
   console.log(`${req.method} ${req.url}`);
@@ -51,7 +53,7 @@ http.createServer(function (req, res) {
   } else {
     // how to redirect in vanilla node: https://stackoverflow.com/questions/4062260/nodejs-redirect-url
     // how to get index url of app in vanilla node: https://stackoverflow.com/questions/10183291/how-to-get-the-full-url-in-express
-    res.writeHead(302, {'Location': req.protocol + '://' + req.host + "/"});
+    res.writeHead(403, {'Location': req.protocol + '://' + req.host + "/"});
     res.end();
     return
   }

@@ -1,16 +1,40 @@
+<div id="datasetButtons"></div>
 <div id="container"></div>
 
 <script>
-  fetch('titanic-passengers.json')
-    .then(res => res.json())
-    .then(json => json.map((person) => person.fields))
-    .then(cleanJson => handleData(cleanJson)) // Call handleData()
-    .catch(err => console.log(err))
+  const datasets = ['titanic-passengers.json', 'iris.json', 'periodic-table.json']
+  const dataButtons = createButtons(datasets, "dataButtons")
+  const dataButtonGroup = document.createElement('div')
+  dataButtons.forEach(button => dataButtonGroup.appendChild(button))
+  datasetButtons.appendChild(dataButtonGroup)
+  makeGroup(dataButtons, (button) => {
+    // clear container node from https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+    const container = document.getElementById("container");
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
-  // fetch('iris.json')
-  //   .then(res => res.json())
-  //   .then(cleanJson => handleData(cleanJson)) // Call handleData()
-  //   .catch(err => console.log(err))
+    getData(button.innerHTML)
+  })
+
+  function getData(dataset) {
+
+    switch(dataset) {
+      case 'titanic-passengers.json':
+        fetch('titanic-passengers.json')
+          .then(res => res.json())
+          .then(json => json.map((person) => person.fields))
+          .then(cleanJson => handleData(cleanJson)) // Call handleData()
+          .catch(err => console.log(err))
+        break
+
+      default:
+        fetch(dataset)
+          .then(res => res.json())
+          .then(cleanJson => handleData(cleanJson)) // Call handleData()
+          .catch(err => console.log(err))
+    }
+  }
 
   // This function handles the loaded JSON data
   function handleData(data) {
@@ -198,8 +222,8 @@
 
     chart.style.display = 'flex'
     chart.style.alignItems = 'flex-end'
-    chart.style.width = `5000px`
-    chart.style.height = `600px`
+    chart.style.width = `fit-content`
+    chart.style.height = `500px`
 
     bars.forEach((bar) => chart.appendChild(bar))
 
@@ -210,20 +234,20 @@
     const key = document.createElement('div')
 
     for (let i = 0; i < categories.length; i++) {
-      const color = document.createElement('div')
+      const color = document.createElement('span')
       key.appendChild(color)
 
       const colorName = document.createElement('span')
       const colorOnCircle = i / categories.length * 360
       color.appendChild(colorName)
       colorName.innerHTML = `${categories[i]}: `
-      colorName.style.fontSize = '20px'
+      colorName.style.fontSize = '24px'
       colorName.style.color = `hsl(${colorOnCircle}, 80%, 50%)`
 
       const personColorInfo = document.createElement('span')
       color.appendChild(personColorInfo)
-      personColorInfo.innerHTML = `${categories[i]}`
-      personColorInfo.style.fontSize = '20px'
+      personColorInfo.innerHTML = `${categories[i]}&nbsp;&nbsp;&nbsp;`
+      personColorInfo.style.fontSize = '16px'
       personColorInfo.style.color = 'black'
     }
 
