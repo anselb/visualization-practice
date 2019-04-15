@@ -128,12 +128,6 @@
     return sample
   }
 
-  function normalizeArr(dataArr) {
-    const maxVal = Math.max(...dataArr)
-    const normalArr = dataArr.map(val => val / maxVal * 100)
-    return normalArr
-  }
-
   function normalizeAll(data) {
     const allFeatures = findAllFeatures(data)
     const numericalFeatures = new Set()
@@ -157,26 +151,6 @@
         data[i][`${feature}Normal`] = data[i][feature] / maxVal * 100
       }
     }
-  }
-
-  // From https://stackoverflow.com/questions/11499268/sort-two-arrays-the-same-way
-  function sortTwoArrs(sortByArr, arrTwo) {
-    // combine
-    const objList = []
-    for (let i = 0; i < sortByArr.length; i++) {
-      objList.push({one: sortByArr[i], two: arrTwo[i]})
-    }
-
-    // sort
-    objList.sort((a, b) => a.one - b.one)
-
-    // separate
-    for (var j = 0; j < objList.length; j++) {
-      sortByArr[j] = objList[j].one;
-      arrTwo[j] = objList[j].two;
-    }
-
-    return {sortedNormalData: sortByArr, sortedPersonColor: arrTwo}
   }
 
   function createBars(data, categoricalData) {
