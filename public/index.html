@@ -15,7 +15,15 @@
 
     const sample = sampleData(data, 0.75)
     const bars = createBars(sample, categorical)
-    createHistogram(bars, "fare", "sex")
+    const histogram = createHistogram(bars)
+    container.appendChild(histogram)
+
+    const heightFeature = "fare"
+    const colorFeature = "sex"
+    showData(bars, heightFeature, colorFeature)
+
+    const key = createKey(categorical[colorFeature])
+    container.appendChild(key)
   }
 
   function findAllFeatures(data) {
@@ -156,9 +164,8 @@
     barElements.forEach((bar) => bar.setColor(fieldColor))
   }
 
-  function createHistogram(bars, fieldHeight, fieldColor) {
+  function createHistogram(bars) {
     const chart = document.createElement('div')
-    container.appendChild(chart)
 
     chart.style.display = 'flex'
     chart.style.alignItems = 'flex-end'
@@ -166,56 +173,31 @@
     chart.style.height = `600px`
 
     bars.forEach((bar) => chart.appendChild(bar))
-    showData(bars, fieldHeight, fieldColor)
+
+    return chart
   }
 
-  function createHistogramOld(personY, personColor, chartWidth, chartHeight) {
-    const normalData = normalizeArr(personY)
-    const colors = ["crimson", "orange", "khaki", "chartreuse", "darkolivegreen",
-                    "darkturquoise", "dodgerblue", "navy", "darkviolet", "hotpink"]
-    const personColorSet = [...(new Set(personColor))]
-    const step = chartWidth / normalData.length
-    const chart = document.createElement('div')
-
-    const {sortedNormalData, sortedPersonColor} = sortTwoArrs(normalData, personColor)
-
-    container.appendChild(chart)
-    chart.style.display = 'flex'
-    chart.style.alignItems = 'flex-end'
-    chart.style.width = `${chartWidth}px`
-    chart.style.height = `${chartHeight}px`
-
-    for (let i = 0; i < sortedNormalData.length; i++) {
-      const bar = document.createElement('div')
-      chart.appendChild(bar)
-
-      bar.style.backgroundColor = colors[personColorSet.indexOf(sortedPersonColor[i])]
-      bar.style.height = (sortedNormalData[i]) ? `${sortedNormalData[i]}%` : `0.5%`
-      bar.style.width = `${step}px`
-      bar.style.marginRight = '1px'
-      bar.style.marginLeft = '1px'
-    }
-
+  function createKey(categories) {
     const key = document.createElement('div')
-    container.appendChild(key)
 
-    for (let i = 0; i < personColorSet.length; i++) {
+    for (let i = 0; i < categories.length; i++) {
       const color = document.createElement('div')
       key.appendChild(color)
 
       const colorName = document.createElement('span')
+      const colorOnCircle = i / categories.length * 360
       color.appendChild(colorName)
-
-      colorName.innerHTML = `${colors[i]}: `
-      colorName.style.fontSize = '24px'
-      colorName.style.color = colors[i]
+      colorName.innerHTML = `${categories[i]}: `
+      colorName.style.fontSize = '20px'
+      colorName.style.color = `hsl(${colorOnCircle}, 80%, 50%)`
 
       const personColorInfo = document.createElement('span')
       color.appendChild(personColorInfo)
-
-      personColorInfo.innerHTML = `${personColorSet[i]}`
-      personColorInfo.style.fontSize = '24px'
+      personColorInfo.innerHTML = `${categories[i]}`
+      personColorInfo.style.fontSize = '20px'
       personColorInfo.style.color = 'black'
     }
+
+    return key
   }
 </script>
