@@ -9,31 +9,47 @@
 
   // This function handles the loaded JSON data
   function handleData(data) {
-    const sample = data.reduce((acc, person) => {
-      if (0.75 < Math.random()) {
-        return [...acc, person]
+    normalizeAll(data)
+    const sample = sampleData(data, 0.75)
+    createHistogram(sample, "fare")
+  }
+
+  function sampleData(data, samplePercent = 0.5) {
+    const sample = data.reduce((acc, dataPoint) => {
+      if (Math.random() < samplePercent) {
+        return [...acc, dataPoint]
       }
       return acc
     }, [])
 
-    const fare = sample.map(person => person.fare)
-    const sex = sample.map(person => person.sex)
-    const familySize = sample.map(person => person.parch + person.sibsp)
-    const embarked = sample.map(person => person.embarked)
-    const age = sample.map(person => person.age)
-
-    const chartHeight = Math.max(...fare)
-    const chartWidth = sample.length * 5
-    createHistogram(fare, familySizes, chartWidth, chartHeight)
-    // createHistogram(fare, sex, chartWidth, chartHeight)
-    // createHistogram(fare, embarked, chartWidth, chartHeight)
-    // createHistogram(familySize, embarked, chartWidth, chartHeight)
+    return sample
   }
 
-  function normalize(dataArr) {
+  function normalizeArr(dataArr) {
     const maxVal = Math.max(...dataArr)
     const normalArr = dataArr.map(val => val / maxVal * 100)
     return normalArr
+  }
+
+  function normalizeAll(data) {
+    const numericalFeatures = new Set()
+
+    data.forEach(dataPoint => {
+      for(let feature in dataPoint) {
+        if (!numericalFeatures.has(feature) && typeof dataPoint[feature] == "number") {
+          console.log(feature, typeof dataPoint[feature])
+          numericalFeatures.add(feature)
+        }
+      }
+    })
+
+    for(let feature of numericalFeatures.values()) {
+      const featureData = data.map(dataPoint => dataPoint[feature])
+      const maxVal = Math.max(...featureData)
+      for(let i = 0; i < data.length; i++) {
+        data[i][`${feature}Normal`] = data[i][feature] / maxVal * 100
+      }
+    }
   }
 
   // From https://stackoverflow.com/questions/11499268/sort-two-arrays-the-same-way
@@ -56,8 +72,51 @@
     return {sortedNormalData: sortByArr, sortedPersonColor: arrTwo}
   }
 
-  function createHistogram(personY, personColor, chartWidth, chartHeight) {
-    const normalData = normalize(personY)
+  function createBars(data) {
+    const elements = []
+
+    data.forEach((item) => {
+      const bar = document.createElement('div')
+      bar.style.width = '2px'
+      bar.style.margin = '1px'
+      bar.style.backgroundColor = 'green'
+      bar.style.transition = '4000ms ease-in-out'
+
+      bar.get = (field) => {
+        return item[field]
+      }
+
+      bar.setHeight = (field) => {
+        bar.style.height = item[`${field}Normal`] ? `${item[`${field}Normal`]}%` : `0.5%`
+      }
+
+      elements.push(bar)
+    })
+
+    return elements
+  }
+
+  function showData(barElements, field) {
+    barElements.forEach((bar) => bar.setHeight(field))
+  }
+
+  function createHistogram(data, field) {
+    const chart = document.createElement('div')
+    container.appendChild(chart)
+
+    chart.style.display = 'flex'
+    chart.style.alignItems = 'flex-end'
+    chart.style.width = `5000px`
+    chart.style.height = `600px`
+
+    const bars = createBars(data)
+    bars.forEach((bar) => chart.appendChild(bar))
+
+    showData(bars, field)
+  }
+
+  function createHistogramOld(personY, personColor, chartWidth, chartHeight) {
+    const normalData = normalizeArr(personY)
     const colors = ["crimson", "orange", "khaki", "chartreuse", "darkolivegreen",
                     "darkturquoise", "dodgerblue", "navy", "darkviolet", "hotpink"]
     const personColorSet = [...(new Set(personColor))]
