@@ -44,7 +44,7 @@ fileSet.add("/periodic-table.json")
 
 
 http.createServer(function (req, res) {
-  console.log(`${req.method} ${req.url}`);
+  // console.log(`${req.method} ${req.url}`);
 
   let parsedUrl = url.parse("/")
   // allows access to files that are only defined in the set and in the docs folder
