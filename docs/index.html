@@ -1,6 +1,7 @@
 <div id="datasetButtons"></div>
 <div id="container"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
 <script>
   const datasets = ['titanic-passengers.json', 'iris.json', 'periodic-table.json']
   const dataButtons = createButtons(datasets, "dataButtons")
@@ -80,6 +81,9 @@
     makeGroup(numButtons, (button) => {
       showHeight(bars, button.innerHTML)
     })
+
+    const libBarChart = createLibBarChart(bars, "survived")
+    container.appendChild(libBarChart)
   }
 
   function findAllFeatures(data) {
@@ -322,6 +326,59 @@
       ctx.stroke()
     })
 
+    return canvas
+  }
+
+  function createLibBarChart(bars, field) {
+    const canvas = document.createElement('canvas')
+    const canvasSquareEdge = 500
+    canvas.width = canvasSquareEdge
+    canvas.height = canvasSquareEdge
+    canvas.style.border = '1px solid'
+
+    const count = {}
+
+    bars.forEach(bar => {
+      dataPoint = bar.get(field)
+      if (dataPoint in count) {
+        count[dataPoint] += 1
+      } else {
+        count[dataPoint] = 1
+      }
+    })
+
+    const data = []
+    const labels = []
+    const innerColors = []
+    const borderColors = []
+    let index = 0
+
+    for (let category in count) {
+      data.push(count[category])
+      labels.push(category)
+      innerColors.push(`hsl(${360 / labels.length * index}, 85%, 75%)`)
+      borderColors.push(`hsl(${360 / labels.length * index}, 85%, 60%)`)
+      index += 1
+    }
+
+    const ctx = canvas.getContext('2d')
+    let libBarChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: field,
+          data: data,
+          backgroundColor: innerColors,
+          borderColor: borderColors
+        }]
+      },
+      options: {
+        responsive: false
+      }
+    })
+
+    console.log(libBarChart)
     return canvas
   }
 </script>
