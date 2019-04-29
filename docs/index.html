@@ -363,7 +363,9 @@
 
     const ctx = canvas.getContext('2d')
     let libBarChart = new Chart(ctx, {
-      type: 'bar',
+      // can be bar, pie, polarArea or doughnut
+      // should try radar, bubble, and scatter
+      type: 'polarArea',
       data: {
         labels: labels,
         datasets: [{
