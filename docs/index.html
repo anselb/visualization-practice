@@ -82,8 +82,19 @@
       showHeight(bars, button.innerHTML)
     })
 
-    const libBarChart = createLibBarChart(bars, "survived")
+    let libBarChart = createLibBarChart(bars, "survived", "bar")
     container.appendChild(libBarChart)
+
+    const chartTypes = ["bar", "pie", "polarArea", "doughnut"]
+    const chartLibButtons = createButtons(chartTypes, "chartLibButton")
+    const chartButtonGroup = document.createElement('div')
+    chartLibButtons.forEach(button => chartButtonGroup.appendChild(button))
+    container.appendChild(chartButtonGroup)
+    makeGroup(chartLibButtons, (button) => {
+      let newLibChart = createLibBarChart(bars, "survived", button.innerHTML)
+      container.replaceChild(newLibChart, libBarChart);
+      libBarChart = newLibChart
+    })
   }
 
   function findAllFeatures(data) {
@@ -329,7 +340,7 @@
     return canvas
   }
 
-  function createLibBarChart(bars, field) {
+  function createLibBarChart(bars, field, chartType) {
     const canvas = document.createElement('canvas')
     const canvasSquareEdge = 500
     canvas.width = canvasSquareEdge
@@ -365,7 +376,7 @@
     let libBarChart = new Chart(ctx, {
       // can be bar, pie, polarArea or doughnut
       // should try radar, bubble, and scatter
-      type: 'polarArea',
+      type: chartType,
       data: {
         labels: labels,
         datasets: [{
