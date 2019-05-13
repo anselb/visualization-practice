@@ -41,6 +41,11 @@ fileSet.add("/")
 fileSet.add("/titanic-passengers.json")
 fileSet.add("/iris.json")
 fileSet.add("/periodic-table.json")
+fileSet.add("/311cases.json")
+fileSet.add("/dayHourHeatmap.html")
+fileSet.add("/rectangularAreaChart.html")
+fileSet.add("/rectangularAreaChart.js")
+fileSet.add("/topTechCompanies2018Q1.json")
 
 
 http.createServer(function (req, res) {
