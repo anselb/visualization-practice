@@ -3,7 +3,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
 <script>
-  const datasets = ['titanic-passengers.json', 'iris.json', 'periodic-table.json']
+  const datasets = ['titanic-passengers.json', 'iris.json', 'periodic-table.json', 'dayHourHeatmap.html', 'rectangularAreaChart.html']
   const dataButtons = createButtons(datasets, "dataButtons")
   const dataButtonGroup = document.createElement('div')
   dataButtons.forEach(button => dataButtonGroup.appendChild(button))
@@ -27,6 +27,14 @@
           .then(json => json.map((person) => person.fields))
           .then(cleanJson => handleData(cleanJson)) // Call handleData()
           .catch(err => console.log(err))
+        break
+
+      case 'dayHourHeatmap.html':
+        window.location.href = "/dayHourHeatmap.html"
+        break
+
+      case 'rectangularAreaChart.html':
+        window.location.href = "/rectangularAreaChart.html"
         break
 
       default:
