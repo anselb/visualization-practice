@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Apple Inc.",
+    "revenueInBillions": 229.2,
+    "employees": 123000,
+    "headquarters": "Cupertino, CA, US",
+    "HQCity": "Cupertino",
+    "HQStateOrCountry": "California",
+    "continent": "North America"
+  },
+  {
+    "name": "Samsung Electronics",
+    "revenueInBillions": 211.9,
+    "employees": 320670,
+    "headquarters": "Suwon, South Korea",
+    "HQCity": "Suwon",
+    "HQStateOrCountry": "South Korea",
+    "continent": "Asia"
+  },
+  {
+    "name": "Amazon",
+    "revenueInBillions": 177.9,
+    "employees": 613300,
+    "headquarters": "Seattle, WA, US",
+    "HQCity": "Seattle",
+    "HQStateOrCountry": "Washington",
+    "continent": "North America"
+  },
+  {
+    "name": "Hon Hai Precision/Foxconn",
+    "revenueInBillions": 154.7,
+    "employees": 803126,
+    "headquarters": "New Taipei City, Taiwan",
+    "HQCity": "New Taipei City",
+    "HQStateOrCountry": "Taiwan",
+    "continent": "Asia"
+  },
+  {
+    "name": "Alphabet Inc.",
+    "revenueInBillions": 110.8,
+    "employees": 80110,
+    "headquarters": "Mountain View, CA, US",
+    "HQCity": "Mountain View",
+    "HQStateOrCountry": "California",
+    "continent": "North America"
+  },
+  {
+    "name": "Microsoft",
+    "revenueInBillions": 90.0,
+    "employees": 124000,
+    "headquarters": "Redmond, WA, US",
+    "HQCity": "Redmond",
+    "HQStateOrCountry": "Washington",
+    "continent": "North America"
+  },
+  {
+    "name": "Huawei",
+    "revenueInBillions": 89.3,
+    "employees": 180000,
+    "headquarters": "Shenzhen, China",
+    "HQCity": "Shenzhen",
+    "HQStateOrCountry": "China",
+    "continent": "Asia"
+  },
+  {
+    "name": "Hitachi",
+    "revenueInBillions": 84.6,
+    "employees": 307275,
+    "headquarters": "Tokyo, Japan",
+    "HQCity": "Tokyo",
+    "HQStateOrCountry": "Japan",
+    "continent": "Asia"
+  },
+  {
+    "name": "IBM",
+    "revenueInBillions": 79.1,
+    "employees": 397800,
+    "headquarters": "Armonk, NY, US",
+    "HQCity": "Armonk",
+    "HQStateOrCountry": "New York",
+    "continent": "North America"
+  },
+  {
+    "name": "Dell Technologies",
+    "revenueInBillions": 78.7,
+    "employees": 145000,
+    "headquarters": "Round Rock, TX, US",
+    "HQCity": "Round Rock",
+    "HQStateOrCountry": "Texas",
+    "continent": "North America"
+  },
+  {
+    "name": "Sony",
+    "revenueInBillions": 77.1,
+    "employees": 117300,
+    "headquarters": "Tokyo, Japan",
+    "HQCity": "Tokyo",
+    "HQStateOrCountry": "Japan",
+    "continent": "Asia"
+  },
+  {
+    "name": "Panasonic",
+    "revenueInBillions": 72.0,
+    "employees": 274143,
+    "headquarters": "Osaka, Japan",
+    "HQCity": "Osaka",
+    "HQStateOrCountry": "Japan",
+    "continent": "Asia"
+  },
+  {
+    "name": "Intel",
+    "revenueInBillions": 62.8,
+    "employees": 102700,
+    "headquarters": "Santa Clara, CA, US",
+    "HQCity": "Santa Clara",
+    "HQStateOrCountry": "California",
+    "continent": "North America"
+  },
+  {
+    "name": "LG Electronics",
+    "revenueInBillions": 54.3,
+    "employees": 74000,
+    "headquarters": "Seoul, South Korea",
+    "HQCity": "Seoul",
+    "HQStateOrCountry": "South Korea",
+    "continent": "Asia"
+  },
+  {
+    "name": "JD.com",
+    "revenueInBillions": 54.0,
+    "employees": 157831,
+    "headquarters": "Beijing, China",
+    "HQCity": "Beijing",
+    "HQStateOrCountry": "China",
+    "continent": "Asia"
+  },
+  {
+    "name": "HP Inc.",
+    "revenueInBillions": 52.0,
+    "employees": 49000,
+    "headquarters": "Palo Alto, CA, US",
+    "HQCity": "Palo Alto",
+    "HQStateOrCountry": ", CA, US",
+    "continent": "North America"
+  }
+]
