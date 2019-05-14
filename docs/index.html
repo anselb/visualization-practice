@@ -5,9 +5,7 @@
 <script>
   const datasets = ['titanic-passengers.json', 'iris.json', 'periodic-table.json', 'dayHourHeatmap.html', 'rectangularAreaChart.html']
   const dataButtons = createButtons(datasets, "dataButtons")
-  const dataButtonGroup = document.createElement('div')
-  dataButtons.forEach(button => dataButtonGroup.appendChild(button))
-  datasetButtons.appendChild(dataButtonGroup)
+  addButtonsToContainer(dataButtons, datasetButtons)
   makeGroup(dataButtons, (button) => {
     // clear container node from https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
     const container = document.getElementById("container");
@@ -19,8 +17,10 @@
   })
 
   function getData(dataset) {
-
+    // Most datasets have a unique way of handling them. If the data is clean,
+    // it can be handled by the default case
     switch(dataset) {
+      // The titanic dataset needs to go into person.fields for the correct info
       case 'titanic-passengers.json':
         fetch('titanic-passengers.json')
           .then(res => res.json())
@@ -29,6 +29,8 @@
           .catch(err => console.log(err))
         break
 
+      // dayHourHeatmap and rectangularAreaChart are separate visualizations
+      // with their own data and html file. As a result, they need a redirect
       case 'dayHourHeatmap.html':
         window.location.href = "dayHourHeatmap.html"
         break
@@ -48,14 +50,17 @@
   // This function handles the loaded JSON data
   function handleData(data) {
     const features = findAllFeatures(data)
+    // Separate the features by their type of categorical and numerical
     const { categorical, numerical } = categorize(data, features)
     normalizeAll(data)
 
     const sample = sampleData(data, 0.75)
     const bars = createBars(sample, categorical)
     const histogram = createHistogram(bars)
+    // histogram must be appended onto an element on the page to be seen
     container.appendChild(histogram)
 
+    // set the default features to load, and display them
     const heightFeature = numerical[0]
     const colorFeature = Object.keys(categorical)[0]
     showHeight(bars, heightFeature)
@@ -67,10 +72,12 @@
     let pieChart = createPieChart(bars, colorFeature, categorical[colorFeature])
     container.appendChild(pieChart)
 
+    // Create the categorical buttons
+    // These buttons will reshow the histogram bar colors, histogram key, and
+    // pie chart based on the category that was selected, by looking at the
+    // text inside of the button
     const catButtons = createButtons(Object.keys(categorical), "categoryButton")
-    const catButtonGroup = document.createElement('div')
-    catButtons.forEach(button => catButtonGroup.appendChild(button))
-    container.appendChild(catButtonGroup)
+    addButtonsToContainer(catButtons, container)
     makeGroup(catButtons, (button) => {
       showColor(bars, button.innerHTML)
       let newKey = createKey(categorical[button.innerHTML])
@@ -82,26 +89,27 @@
       pieChart = newPie
     })
 
+    // Create the numerical buttons
+    //
     const numButtons = createButtons(numerical, "numericalButton")
-    const numButtonGroup = document.createElement('div')
-    numButtons.forEach(button => numButtonGroup.appendChild(button))
-    container.appendChild(numButtonGroup)
+    addButtonsToContainer(numButtons, container)
     makeGroup(numButtons, (button) => {
       showHeight(bars, button.innerHTML)
     })
 
-    let libBarChart = createLibBarChart(bars, "survived", "bar")
-    container.appendChild(libBarChart)
+    // libChart is creates a chart using the Chart.js library
+    let libChart = createlibChart(bars, "survived", "bar")
+    container.appendChild(libChart)
 
+    // Create a chart or the survivors vs non-survivors
+    // The type of chart can be selected, but the data is hardcoded
     const chartTypes = ["bar", "pie", "polarArea", "doughnut"]
     const chartLibButtons = createButtons(chartTypes, "chartLibButton")
-    const chartButtonGroup = document.createElement('div')
-    chartLibButtons.forEach(button => chartButtonGroup.appendChild(button))
-    container.appendChild(chartButtonGroup)
+    addButtonsToContainer(chartLibButtons, container)
     makeGroup(chartLibButtons, (button) => {
-      let newLibChart = createLibBarChart(bars, "survived", button.innerHTML)
-      container.replaceChild(newLibChart, libBarChart);
-      libBarChart = newLibChart
+      let newLibChart = createlibChart(bars, "survived", button.innerHTML)
+      container.replaceChild(newLibChart, libChart);
+      libChart = newLibChart
     })
   }
 
@@ -223,6 +231,23 @@
     barElements.forEach((bar) => bar.setColor(fieldColor))
   }
 
+  // countBarData returns a histogram of all the unique data points under
+  // the given field category
+  function countBarData(bars, field) {
+    const count = {}
+
+    bars.forEach(bar => {
+      dataPoint = bar.get(field)
+      if (dataPoint in count) {
+        count[dataPoint] += 1
+      } else {
+        count[dataPoint] = 1
+      }
+    })
+
+    return count
+  }
+
   function createHistogram(bars) {
     const chart = document.createElement('div')
 
@@ -243,6 +268,8 @@
       const color = document.createElement('span')
       key.appendChild(color)
 
+      // Generate a color based on the number of fieldCategories
+      // Store the category name in the span and color it based on the generated color
       const colorName = document.createElement('span')
       const colorOnCircle = i / categories.length * 360
       color.appendChild(colorName)
@@ -250,11 +277,14 @@
       colorName.style.fontSize = '24px'
       colorName.style.color = `hsl(${colorOnCircle}, 80%, 50%)`
 
-      const personColorInfo = document.createElement('span')
-      color.appendChild(personColorInfo)
-      personColorInfo.innerHTML = `${categories[i]}&nbsp;&nbsp;&nbsp;`
-      personColorInfo.style.fontSize = '16px'
-      personColorInfo.style.color = 'black'
+      // Add another span that is the same category name, but styled in
+      // a smaller font and in black. This is done in case the color makes the
+      // previous text illegible
+      const categoryColorInfo = document.createElement('span')
+      color.appendChild(categoryColorInfo)
+      categoryColorInfo.innerHTML = `${categories[i]} `
+      categoryColorInfo.style.fontSize = '16px'
+      categoryColorInfo.style.color = 'black'
     }
 
     return key
@@ -309,6 +339,14 @@
     return buttons
   }
 
+  // addButtonsToContainer creates a div around the buttons that are passed in
+  // and adds that div to the passed in element
+  function addButtonsToContainer(buttonsToGroup, containerToAppend) {
+    const buttonGroup = document.createElement('div')
+    buttonsToGroup.forEach(button => buttonGroup.appendChild(button))
+    containerToAppend.appendChild(buttonGroup)
+  }
+
   function createPieChart(bars, field, categories) {
     const canvas = document.createElement('canvas')
     const canvasSquareEdge = 500
@@ -317,16 +355,7 @@
     canvas.style.border = '1px solid'
 
     const total = bars.length
-    const count = {}
-
-    bars.forEach(bar => {
-      dataPoint = bar.get(field)
-      if (dataPoint in count) {
-        count[dataPoint] += 1
-      } else {
-        count[dataPoint] = 1
-      }
-    })
+    const count = countBarData(bars, field)
 
     const ctx = canvas.getContext('2d')
     const fullCircle = Math.PI * 2
@@ -348,23 +377,14 @@
     return canvas
   }
 
-  function createLibBarChart(bars, field, chartType) {
+  function createlibChart(bars, field, chartType) {
     const canvas = document.createElement('canvas')
     const canvasSquareEdge = 500
     canvas.width = canvasSquareEdge
     canvas.height = canvasSquareEdge
     canvas.style.border = '1px solid'
 
-    const count = {}
-
-    bars.forEach(bar => {
-      dataPoint = bar.get(field)
-      if (dataPoint in count) {
-        count[dataPoint] += 1
-      } else {
-        count[dataPoint] = 1
-      }
-    })
+    const count = countBarData(bars, field)
 
     const data = []
     const labels = []
@@ -381,7 +401,7 @@
     }
 
     const ctx = canvas.getContext('2d')
-    let libBarChart = new Chart(ctx, {
+    let libChart = new Chart(ctx, {
       // can be bar, pie, polarArea or doughnut
       // should try radar, bubble, and scatter
       type: chartType,
@@ -399,7 +419,6 @@
       }
     })
 
-    console.log(libBarChart)
     return canvas
   }
 </script>
