@@ -1,0 +1,76 @@
+<div id="container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+<script>
+  fetch("cereal.json")
+    .then(res => res.json())
+    .then(json => createGraphs(json))
+    .catch(err => console.log(err))
+
+  function createGraphs(cerealData) {
+    const container = document.getElementById("container");
+    const ratingChart = createlibChart(cerealData, "rating", "bar")
+    container.appendChild(ratingChart)
+  }
+
+  function countData(data, field) {
+    const count = {}
+
+    data.forEach(cereal => {
+      dataPoint = cereal[field]
+      if (dataPoint in count) {
+        count[dataPoint] += 1
+      } else {
+        count[dataPoint] = 1
+      }
+    })
+
+    return count
+  }
+
+  function getDataField(data, field) {
+    return data.map((cereal) => cereal[field])
+  }
+
+  function createlibChart(cerealData, field, chartType) {
+    const canvas = document.createElement('canvas')
+    canvas.width = 700
+    canvas.height = 600
+    canvas.style.border = '1px solid'
+
+    // const count = countData(cerealData, field)
+
+    const data = []
+    const labels = []
+    const innerColors = []
+    const borderColors = []
+    let index = 0
+
+    for (let dataPoint of cerealData) {
+      data.push(dataPoint[field])
+      labels.push(dataPoint["name"])
+      innerColors.push(`hsl(${360 / labels.length * index}, 85%, 75%)`)
+      borderColors.push(`hsl(${360 / labels.length * index}, 85%, 60%)`)
+      index += 1
+    }
+
+    const ctx = canvas.getContext('2d')
+    let libChart = new Chart(ctx, {
+      type: chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: field,
+          data: data,
+          backgroundColor: innerColors,
+          borderColor: borderColors
+        }]
+      },
+      options: {
+        responsive: false
+      }
+    })
+
+    return canvas
+  }
+</script>
