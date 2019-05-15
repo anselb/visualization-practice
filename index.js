@@ -46,6 +46,8 @@ fileSet.add("/dayHourHeatmap.html")
 fileSet.add("/rectangularAreaChart.html")
 fileSet.add("/rectangularAreaChart.js")
 fileSet.add("/topTechCompanies2018Q1.json")
+fileSet.add("/cereal.json")
+fileSet.add("/cereals.html")
 
 
 http.createServer(function (req, res) {
