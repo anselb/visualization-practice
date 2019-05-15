@@ -92,7 +92,7 @@
   {
     "name": "Apple Cinnamon Cheerios",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 2,
     "fat": 2,
@@ -110,7 +110,7 @@
   {
     "name": "Apple Jacks",
     "mfr": "Kelloggs",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 2,
     "fat": 0,
@@ -128,7 +128,7 @@
   {
     "name": "Basic 4",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 130,
     "protein": 3,
     "fat": 2,
@@ -146,7 +146,7 @@
   {
     "name": "Bran Chex",
     "mfr": "Ralston Purina",
-    "type": "Cold",
+    "type": "cold",
     "calories": 90,
     "protein": 2,
     "fat": 1,
@@ -164,7 +164,7 @@
   {
     "name": "Bran Flakes",
     "mfr": "Post",
-    "type": "Cold",
+    "type": "cold",
     "calories": 90,
     "protein": 3,
     "fat": 0,
@@ -182,7 +182,7 @@
   {
     "name": "Cap'n'Crunch",
     "mfr": "Quaker Oats",
-    "type": "Cold",
+    "type": "cold",
     "calories": 120,
     "protein": 1,
     "fat": 2,
@@ -200,7 +200,7 @@
   {
     "name": "Cheerios",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 6,
     "fat": 2,
@@ -218,7 +218,7 @@
   {
     "name": "Cinnamon Toast Crunch",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 120,
     "protein": 1,
     "fat": 3,
@@ -236,7 +236,7 @@
   {
     "name": "Clusters",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 3,
     "fat": 2,
@@ -254,7 +254,7 @@
   {
     "name": "Cocoa Puffs",
     "mfr": "General Mills",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 1,
     "fat": 1,
@@ -272,7 +272,7 @@
   {
     "name": "Corn Chex",
     "mfr": "Ralston Purina",
-    "type": "Cold",
+    "type": "cold",
     "calories": 110,
     "protein": 2,
     "fat": 0,
@@ -290,7 +290,7 @@
   {
     "name": "Corn Flakes",
     "mfr": "Kelloggs",
-    "type": "Cold",
+    "type": "cold",
     "calories": 100,
     "protein": 2,
     "fat": 0,
