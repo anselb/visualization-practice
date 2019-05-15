@@ -39,6 +39,10 @@
         window.location.href = "rectangularAreaChart.html"
         break
 
+      case 'cereals.html':
+        window.location.href = "cereals.html"
+        break
+
       default:
         fetch(dataset)
           .then(res => res.json())
@@ -57,12 +61,14 @@
     const sample = sampleData(data, 0.75)
     const bars = createBars(sample, categorical)
     const histogram = createHistogram(bars)
+    const chartTypes = ["bar", "pie", "polarArea", "doughnut"]
     // histogram must be appended onto an element on the page to be seen
     container.appendChild(histogram)
 
     // set the default features to load, and display them
-    const heightFeature = numerical[0]
-    const colorFeature = Object.keys(categorical)[0]
+    let heightFeature = numerical[0]
+    let colorFeature = Object.keys(categorical)[0]
+    let chartType = chartTypes[0]
     showHeight(bars, heightFeature)
     showColor(bars, colorFeature)
 
@@ -71,6 +77,10 @@
 
     let pieChart = createPieChart(bars, colorFeature, categorical[colorFeature])
     container.appendChild(pieChart)
+
+    // libChart is creates a chart using the Chart.js library
+    let libChart = createlibChart(bars, colorFeature, chartType)
+    container.appendChild(libChart)
 
     // Create the categorical buttons
     // These buttons will reshow the histogram bar colors, histogram key, and
@@ -87,6 +97,11 @@
       let newPie = createPieChart(bars, button.innerHTML, categorical[button.innerHTML])
       container.replaceChild(newPie, pieChart)
       pieChart = newPie
+
+      let newLibChart = createlibChart(bars, button.innerHTML, chartType)
+      container.replaceChild(newLibChart, libChart);
+      libChart = newLibChart
+      colorFeature = button.innerHTML
     })
 
     // Create the numerical buttons
@@ -97,19 +112,15 @@
       showHeight(bars, button.innerHTML)
     })
 
-    // libChart is creates a chart using the Chart.js library
-    let libChart = createlibChart(bars, "survived", "bar")
-    container.appendChild(libChart)
-
     // Create a chart or the survivors vs non-survivors
     // The type of chart can be selected, but the data is hardcoded
-    const chartTypes = ["bar", "pie", "polarArea", "doughnut"]
     const chartLibButtons = createButtons(chartTypes, "chartLibButton")
     addButtonsToContainer(chartLibButtons, container)
     makeGroup(chartLibButtons, (button) => {
-      let newLibChart = createlibChart(bars, "survived", button.innerHTML)
+      let newLibChart = createlibChart(bars, colorFeature, button.innerHTML)
       container.replaceChild(newLibChart, libChart);
       libChart = newLibChart
+      chartType = button.innerHTML
     })
   }
 
@@ -198,7 +209,11 @@
 
     data.forEach((item) => {
       const bar = document.createElement('div')
-      bar.style.width = '2px'
+      if (screen.width < data.length * 3) {
+        bar.style.width = '2px'
+      } else {
+        bar.style.width = '7px'
+      }
       bar.style.margin = '1px'
 
       bar.get = (field) => {
